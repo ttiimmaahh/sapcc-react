@@ -1,0 +1,232 @@
+import type {
+  OccClientConfig,
+  OccRequestConfig,
+  OccResponse,
+  OccErrorResponse,
+  Interceptor,
+} from './types'
+import { OccError } from './occ-error'
+import { buildRawUrl } from './occ-endpoints'
+
+/**
+ * HTTP client for SAP Commerce Cloud OCC REST APIs.
+ *
+ * Uses native `fetch` internally. Supports:
+ * - Request interceptors (e.g., auth token injection)
+ * - Automatic retry on network errors
+ * - OCC error response parsing into typed OccError instances
+ * - Dev mode request/response logging
+ */
+export class OccClient {
+  private readonly config: OccClientConfig
+  private readonly interceptors: Interceptor[]
+  private readonly maxRetries: number
+
+  constructor(config: OccClientConfig) {
+    this.config = config
+    this.interceptors = config.interceptors ?? []
+    this.maxRetries = config.retries ?? 1
+  }
+
+  /**
+   * Sends a GET request to the OCC API.
+   */
+  async get<T>(
+    path: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'GET', path, params })
+  }
+
+  /**
+   * Sends a POST request to the OCC API.
+   */
+  async post<T>(
+    path: string,
+    body?: unknown,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'POST', path, body, params })
+  }
+
+  /**
+   * Sends a PUT request to the OCC API.
+   */
+  async put<T>(
+    path: string,
+    body?: unknown,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'PUT', path, body, params })
+  }
+
+  /**
+   * Sends a PATCH request to the OCC API.
+   */
+  async patch<T>(
+    path: string,
+    body?: unknown,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'PATCH', path, body, params })
+  }
+
+  /**
+   * Sends a DELETE request to the OCC API.
+   */
+  async delete<T>(
+    path: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'DELETE', path, params })
+  }
+
+  /**
+   * Core request method. Runs interceptors, sends fetch, handles errors and retries.
+   */
+  private async request<T>(initialConfig: OccRequestConfig): Promise<OccResponse<T>> {
+    // Run interceptor chain
+    let config = initialConfig
+    for (const interceptor of this.interceptors) {
+      config = await interceptor(config)
+    }
+
+    const url = buildRawUrl(
+      this.config.baseUrl,
+      this.config.prefix,
+      this.config.baseSite,
+      config.path,
+      config.params,
+    )
+
+    const fetchOptions = this.buildFetchOptions(config)
+
+    if (this.config.logging) {
+      this.logRequest(config.method, url, fetchOptions)
+    }
+
+    return this.executeWithRetry<T>(url, fetchOptions, 0)
+  }
+
+  /**
+   * Executes fetch with retry logic for network errors.
+   * Only retries on network errors (TypeError), not on HTTP error responses.
+   */
+  private async executeWithRetry<T>(
+    url: string,
+    options: RequestInit,
+    attempt: number,
+  ): Promise<OccResponse<T>> {
+    try {
+      const response = await fetch(url, options)
+
+      if (this.config.logging) {
+        this.logResponse(url, response)
+      }
+
+      if (!response.ok) {
+        await this.handleErrorResponse(response)
+      }
+
+      // Handle 204 No Content
+      if (response.status === 204) {
+        return {
+          data: undefined as T,
+          status: response.status,
+          headers: response.headers,
+        }
+      }
+
+      const data = (await response.json()) as T
+
+      return {
+        data,
+        status: response.status,
+        headers: response.headers,
+      }
+    } catch (error) {
+      // Only retry on network errors (TypeError: Failed to fetch), not OccErrors
+      if (error instanceof TypeError && attempt < this.maxRetries) {
+        return this.executeWithRetry<T>(url, options, attempt + 1)
+      }
+      throw error
+    }
+  }
+
+  /**
+   * Parses error response body and throws an OccError.
+   */
+  private async handleErrorResponse(response: Response): Promise<never> {
+    let body: OccErrorResponse
+    try {
+      body = (await response.json()) as OccErrorResponse
+    } catch {
+      // If body isn't valid JSON, create a generic error
+      body = {
+        errors: [
+          {
+            type: 'UnknownError',
+            message: `HTTP ${String(response.status)}: ${response.statusText}`,
+          },
+        ],
+      }
+    }
+
+    // Ensure errors array exists
+    if (!Array.isArray(body.errors)) {
+      body = {
+        errors: [
+          {
+            type: 'UnknownError',
+            message: `HTTP ${String(response.status)}: ${response.statusText}`,
+          },
+        ],
+      }
+    }
+
+    throw OccError.fromResponse(response, body)
+  }
+
+  /**
+   * Builds RequestInit options from our config.
+   */
+  private buildFetchOptions(config: OccRequestConfig): RequestInit {
+    const headers: Record<string, string> = {
+      Accept: 'application/json',
+      ...config.headers,
+    }
+
+    // Add Content-Type for requests with body
+    if (config.body !== undefined) {
+      headers['Content-Type'] = 'application/json'
+    }
+
+    const options: RequestInit = {
+      method: config.method,
+      headers,
+    }
+
+    if (config.body !== undefined) {
+      options.body = JSON.stringify(config.body)
+    }
+
+    return options
+  }
+
+  /**
+   * Logs outgoing request details (dev mode only).
+   */
+  private logRequest(_method: string, url: string, options: RequestInit): void {
+    console.debug(`[sapcc-react] ${options.method ?? 'GET'} ${url}`)
+    if (options.body) {
+      console.debug('[sapcc-react] Body:', options.body)
+    }
+  }
+
+  /**
+   * Logs incoming response details (dev mode only).
+   */
+  private logResponse(url: string, response: Response): void {
+    console.debug(`[sapcc-react] ${String(response.status)} ${url}`)
+  }
+}

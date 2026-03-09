@@ -1,0 +1,81 @@
+{
+  "name": "sapcc-react",
+  "version": "0.0.0",
+  "description": "Headless React hooks for SAP Commerce Cloud OCC APIs",
+  "type": "module",
+  "sideEffects": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/argano/sapcc-react.git",
+    "directory": "packages/sapcc-react"
+  },
+  "keywords": [
+    "react",
+    "sap",
+    "commerce-cloud",
+    "hybris",
+    "occ",
+    "hooks",
+    "headless"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./site-context": {
+      "import": {
+        "types": "./dist/site-context/index.d.ts",
+        "default": "./dist/site-context/index.mjs"
+      },
+      "require": {
+        "types": "./dist/site-context/index.d.cts",
+        "default": "./dist/site-context/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "validate": "publint && attw --pack . --profile node16",
+    "size": "size-limit"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.2",
+    "@faker-js/faker": "10.3.0",
+    "@size-limit/preset-small-lib": "12.0.1",
+    "@tanstack/react-query": "5.90.21",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "happy-dom": "20.8.3",
+    "msw": "2.12.10",
+    "publint": "0.3.18",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "size-limit": "12.0.1",
+    "tsup": "8.5.1"
+  }
+}
