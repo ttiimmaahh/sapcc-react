@@ -60,6 +60,16 @@
         "default": "./dist/auth/index.cjs"
       }
     },
+    "./cart": {
+      "import": {
+        "types": "./dist/cart/index.d.ts",
+        "default": "./dist/cart/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cart/index.d.cts",
+        "default": "./dist/cart/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",

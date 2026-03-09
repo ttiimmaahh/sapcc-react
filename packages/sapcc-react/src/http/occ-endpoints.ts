@@ -23,6 +23,18 @@ const endpointTemplates: Record<string, string> = {
   productSuggestions: '/products/suggestions',
   productStock: '/products/:productCode/stock',
   productReferences: '/products/:productCode/references',
+
+  // Cart
+  carts: '/users/:userId/carts',
+  cart: '/users/:userId/carts/:cartId',
+  cartEntries: '/users/:userId/carts/:cartId/entries',
+  cartEntry: '/users/:userId/carts/:cartId/entries/:entryNumber',
+  cartVouchers: '/users/:userId/carts/:cartId/vouchers',
+  cartVoucher: '/users/:userId/carts/:cartId/vouchers/:voucherId',
+  cartPromotions: '/users/:userId/carts/:cartId/promotions',
+  cartSave: '/users/current/carts/:cartId/save',
+  cartRestore: '/users/current/carts/:cartId/restoresavedcart',
+  cartClone: '/users/current/carts/:cartId/clonesavedcart',
 }
 
 /**

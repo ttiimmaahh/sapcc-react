@@ -150,8 +150,11 @@ export class OccClient {
         await this.handleErrorResponse(response)
       }
 
-      // Handle 204 No Content
-      if (response.status === 204) {
+      // Handle empty response bodies (204 No Content, or responses with no body like voucher apply)
+      const contentLength = response.headers.get('content-length')
+      const hasBody = response.status !== 204 && contentLength !== '0'
+
+      if (!hasBody) {
         return {
           data: undefined as T,
           status: response.status,
@@ -159,7 +162,9 @@ export class OccClient {
         }
       }
 
-      const data = (await response.json()) as T
+      // Try to parse JSON; some SAP CC endpoints return 200 with an empty body
+      const text = await response.text()
+      const data = (text ? JSON.parse(text) : undefined) as T
 
       return {
         data,

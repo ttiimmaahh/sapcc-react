@@ -6,6 +6,7 @@ export default defineConfig({
     'site-context/index': 'src/site-context/index.ts',
     'product/index': 'src/product/index.ts',
     'auth/index': 'src/auth/index.ts',
+    'cart/index': 'src/cart/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,

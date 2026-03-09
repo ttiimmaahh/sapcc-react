@@ -5,6 +5,7 @@ import { SapccContext, type SapccContextValue } from './SapccContext'
 import { OccClient } from '../http/occ-client'
 import { SiteContextProvider } from '../site-context/SiteContextProvider'
 import { AuthProvider } from '../auth/AuthProvider'
+import { CartProvider } from '../cart/CartProvider'
 
 /**
  * Props for the SapccProvider component.
@@ -66,12 +67,17 @@ export function SapccProvider({ config, children }: SapccProviderProps) {
 
   // Conditionally wrap with AuthProvider when auth config is present.
   // AuthProvider overrides the SapccContext with an auth-aware OccClient.
+  // CartProvider sits after AuthProvider so it can detect auth state.
   const content = resolvedConfig.auth ? (
     <AuthProvider>
-      <SiteContextProvider>{children}</SiteContextProvider>
+      <CartProvider>
+        <SiteContextProvider>{children}</SiteContextProvider>
+      </CartProvider>
     </AuthProvider>
   ) : (
-    <SiteContextProvider>{children}</SiteContextProvider>
+    <CartProvider>
+      <SiteContextProvider>{children}</SiteContextProvider>
+    </CartProvider>
   )
 
   return <SapccContext.Provider value={contextValue}>{content}</SapccContext.Provider>
