@@ -20,8 +20,14 @@ export interface OccRequestConfig {
   path: string
   /** URL query parameters */
   params?: Record<string, string | number | boolean | undefined>
-  /** Request body (will be JSON-stringified) */
+  /** Request body (will be JSON-stringified, or form-encoded if contentType is 'form') */
   body?: unknown
+  /**
+   * Content type for the request body.
+   * - `'json'` (default) — `application/json`, body is JSON-stringified
+   * - `'form'` — `application/x-www-form-urlencoded`, body is serialized via URLSearchParams
+   */
+  contentType?: 'json' | 'form'
   /** Additional request headers */
   headers?: Record<string, string>
   /** Whether this request requires authentication */

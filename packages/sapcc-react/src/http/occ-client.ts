@@ -215,6 +215,20 @@ export class OccClient {
   }
 
   /**
+   * Sends a POST request with `application/x-www-form-urlencoded` body.
+   *
+   * Used for OCC endpoints that require form-encoded data
+   * (e.g., consent submission).
+   */
+  async postForm<T>(
+    path: string,
+    body: Record<string, string>,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): Promise<OccResponse<T>> {
+    return this.request<T>({ method: 'POST', path, body, params, contentType: 'form' })
+  }
+
+  /**
    * Builds RequestInit options from our config.
    */
   private buildFetchOptions(config: OccRequestConfig): RequestInit {
@@ -223,9 +237,13 @@ export class OccClient {
       ...config.headers,
     }
 
+    const isFormEncoded = config.contentType === 'form'
+
     // Add Content-Type for requests with body
     if (config.body !== undefined) {
-      headers['Content-Type'] = 'application/json'
+      headers['Content-Type'] = isFormEncoded
+        ? 'application/x-www-form-urlencoded'
+        : 'application/json'
     }
 
     const options: RequestInit = {
@@ -234,7 +252,9 @@ export class OccClient {
     }
 
     if (config.body !== undefined) {
-      options.body = JSON.stringify(config.body)
+      options.body = isFormEncoded
+        ? new URLSearchParams(config.body as Record<string, string>).toString()
+        : JSON.stringify(config.body)
     }
 
     return options

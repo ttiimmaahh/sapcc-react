@@ -43,6 +43,35 @@ const endpointTemplates: Record<string, string> = {
   cartPaymentDetails: '/users/:userId/carts/:cartId/paymentdetails',
   cartEmail: '/users/:userId/carts/:cartId/email',
   orders: '/users/:userId/orders',
+
+  // User profile
+  userProfile: '/users/:userId',
+  userPassword: '/users/:userId/password',
+
+  // User addresses
+  userAddresses: '/users/:userId/addresses',
+  userAddress: '/users/:userId/addresses/:addressId',
+  userAddressVerification: '/users/:userId/addresses/verification',
+
+  // User payment methods
+  userPaymentDetails: '/users/:userId/paymentdetails',
+  userPaymentDetail: '/users/:userId/paymentdetails/:paymentDetailsId',
+
+  // User consents
+  userConsentTemplates: '/users/:userId/consenttemplates',
+  userConsents: '/users/:userId/consents',
+  userConsent: '/users/:userId/consents/:consentCode',
+
+  // User notification preferences
+  userNotificationPreferences: '/users/:userId/notificationpreferences',
+
+  // User product interests
+  userProductInterests: '/users/:userId/productinterests',
+
+  // User customer coupons
+  userCustomerCoupons: '/users/:userId/customercoupons',
+  userCustomerCouponClaim: '/users/:userId/customercoupons/:couponCode/claim',
+  userCustomerCouponNotification: '/users/:userId/customercoupons/:couponCode/notification',
 }
 
 /**

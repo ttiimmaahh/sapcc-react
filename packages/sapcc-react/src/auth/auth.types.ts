@@ -1,4 +1,5 @@
 import type { OccFields } from '../http/types'
+import type { Address } from '../cart/cart.types'
 
 // ─── OAuth2 Token Types ─────────────────────────────────────────────────────
 
@@ -105,6 +106,8 @@ export interface User {
   displayUid?: string
   /** Whether the user is a guest checkout user */
   guest?: boolean
+  /** Default address (present in FULL response) */
+  defaultAddress?: Address
 }
 
 // ─── Auth State Types ───────────────────────────────────────────────────────

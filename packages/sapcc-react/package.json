@@ -80,6 +80,16 @@
         "default": "./dist/checkout/index.cjs"
       }
     },
+    "./user": {
+      "import": {
+        "types": "./dist/user/index.d.ts",
+        "default": "./dist/user/index.mjs"
+      },
+      "require": {
+        "types": "./dist/user/index.d.cts",
+        "default": "./dist/user/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",

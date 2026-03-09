@@ -208,3 +208,56 @@ export type {
   GuestCheckoutParams,
   UseDeliveryModesOptions,
 } from './checkout'
+
+// User account
+export {
+  useUserProfile,
+  useAddresses,
+  usePaymentMethods,
+  useConsents,
+  useNotificationPreferences,
+  useProductInterests,
+  useCustomerCoupons,
+  userQueries,
+} from './user'
+export type {
+  // Profile
+  UpdateUserProfileParams,
+  ChangePasswordParams,
+  UseUserProfileOptions,
+  // Addresses
+  AddressListResponse,
+  CreateAddressParams,
+  UpdateAddressParams,
+  AddressVerificationResult,
+  AddressVerificationError,
+  UseAddressesOptions,
+  // Payment methods
+  PaymentDetailsListResponse,
+  UpdatePaymentDetailsParams,
+  UsePaymentMethodsOptions,
+  // Consents
+  Consent,
+  ConsentTemplate,
+  ConsentTemplateListResponse,
+  GiveConsentParams,
+  UseConsentsOptions,
+  // Notification preferences
+  NotificationChannel,
+  NotificationPreference,
+  NotificationPreferenceListResponse,
+  UseNotificationPreferencesOptions,
+  // Product interests
+  NotificationType,
+  ProductInterestEntry,
+  ProductInterestRelation,
+  ProductInterestSearchResult,
+  AddProductInterestParams,
+  RemoveProductInterestParams,
+  UseProductInterestsOptions,
+  // Customer coupons
+  CustomerCouponStatus,
+  CustomerCoupon,
+  CustomerCouponSearchResult,
+  UseCustomerCouponsOptions,
+} from './user'

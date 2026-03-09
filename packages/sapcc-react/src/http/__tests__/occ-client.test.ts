@@ -218,4 +218,46 @@ describe('OccClient', () => {
     expect(result.status).toBe(204)
     expect(result.data).toBeUndefined()
   })
+
+  it('sends a form-encoded POST via postForm()', async () => {
+    server.use(
+      http.post(`${BASE_URL}${PREFIX}/${SITE}/users/current/consents`, async ({ request }) => {
+        const contentType = request.headers.get('content-type')
+        expect(contentType).toBe('application/x-www-form-urlencoded')
+
+        const text = await request.text()
+        const params = new URLSearchParams(text)
+        return HttpResponse.json({
+          consentTemplateId: params.get('consentTemplateId'),
+          consentTemplateVersion: params.get('consentTemplateVersion'),
+        }, { status: 201 })
+      }),
+    )
+
+    const client = createClient()
+    const result = await client.postForm<{ consentTemplateId: string; consentTemplateVersion: string }>(
+      '/users/current/consents',
+      { consentTemplateId: 'MARKETING', consentTemplateVersion: '0' },
+    )
+    expect(result.status).toBe(201)
+    expect(result.data.consentTemplateId).toBe('MARKETING')
+    expect(result.data.consentTemplateVersion).toBe('0')
+  })
+
+  it('sends JSON Content-Type by default for post()', async () => {
+    server.use(
+      http.post(`${BASE_URL}${PREFIX}/${SITE}/json-test`, async ({ request }) => {
+        const contentType = request.headers.get('content-type')
+        expect(contentType).toBe('application/json')
+
+        const body = await request.json()
+        return HttpResponse.json(body)
+      }),
+    )
+
+    const client = createClient()
+    const result = await client.post<{ key: string }>('/json-test', { key: 'value' })
+    expect(result.status).toBe(200)
+    expect(result.data.key).toBe('value')
+  })
 })
