@@ -72,6 +72,17 @@ const endpointTemplates: Record<string, string> = {
   userCustomerCoupons: '/users/:userId/customercoupons',
   userCustomerCouponClaim: '/users/:userId/customercoupons/:couponCode/claim',
   userCustomerCouponNotification: '/users/:userId/customercoupons/:couponCode/notification',
+
+  // Orders
+  order: '/users/:userId/orders/:orderCode',
+  orderCancellation: '/users/:userId/orders/:orderCode/cancellation',
+
+  // Return requests
+  orderReturns: '/users/:userId/orderReturns',
+  orderReturn: '/users/:userId/orderReturns/:returnRequestCode',
+
+  // Consignment tracking
+  consignmentTracking: '/orders/:orderCode/consignments/:consignmentCode/tracking',
 }
 
 /**

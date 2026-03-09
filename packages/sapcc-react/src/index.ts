@@ -261,3 +261,37 @@ export type {
   CustomerCouponSearchResult,
   UseCustomerCouponsOptions,
 } from './user'
+
+// Orders
+export {
+  useOrders,
+  useOrder,
+  useOrderCancellation,
+  useOrderReturns,
+  useCreateReturn,
+  useConsignmentTracking,
+  orderQueries,
+} from './order'
+export type {
+  // Order history
+  OrderSort,
+  OrderHistoryPage,
+  // Cancellation
+  CancellationRequestEntryInput,
+  CancelOrderParams,
+  // Return requests
+  ReturnRequestStatus,
+  ReturnRequestEntry,
+  ReturnRequest,
+  ReturnRequestListPage,
+  ReturnRequestEntryInput,
+  CreateReturnRequestParams,
+  // Consignment tracking
+  TrackingEvent,
+  ConsignmentTracking,
+  // Hook options
+  UseOrdersOptions,
+  UseOrderOptions,
+  UseOrderReturnsOptions,
+  UseConsignmentTrackingOptions,
+} from './order'
