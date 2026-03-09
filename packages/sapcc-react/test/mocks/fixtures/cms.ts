@@ -7,7 +7,7 @@ import type {
   ContentSlot,
   ComponentList,
   ContentSlotList,
-  CmsPage,
+  CmsPageData,
   CmsComponentListResponse,
 } from '../../../src/cms/cms.types'
 import { createPagination } from './common'
@@ -113,8 +113,8 @@ export function createContentSlot(
 // ---------------------------------------------------------------------------
 
 export function createCmsPage(
-  overrides: Partial<CmsPage> = {},
-): CmsPage {
+  overrides: Partial<CmsPageData> = {},
+): CmsPageData {
   const contentSlots: ContentSlotList = overrides.contentSlots ?? {
     contentSlot: [
       createContentSlot({ position: 'TopHeaderSlot' }),

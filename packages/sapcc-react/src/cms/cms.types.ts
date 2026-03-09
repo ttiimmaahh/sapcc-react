@@ -10,6 +10,7 @@
  * - `components.component[]` (not `components[]`)
  */
 
+import type { ReactNode } from 'react'
 import type { OccFields } from '../http/types'
 import type { Pagination, Sort } from '../product/product.types'
 
@@ -152,7 +153,7 @@ export interface ContentSlotList {
 // ---------------------------------------------------------------------------
 
 /** A CMS page returned by the OCC API */
-export interface CmsPage {
+export interface CmsPageData {
   /** Page UID */
   uid?: string
   /** Page display name */
@@ -249,4 +250,87 @@ export interface UseCmsComponentsOptions {
   catalogCode?: string
   /** Whether the query is enabled (default: true) */
   enabled?: boolean
+}
+
+// ---------------------------------------------------------------------------
+// Rendering component prop types (Phase 5B)
+// ---------------------------------------------------------------------------
+
+/**
+ * Props passed to every CMS component registered in the component mapping.
+ *
+ * @typeParam T - The CMS component data type (defaults to `CmsComponent`)
+ *
+ * @example
+ * ```tsx
+ * function Banner({ data, slot }: CmsComponentProps<CmsBannerComponent>) {
+ *   return <h2>{data.headline}</h2>
+ * }
+ * ```
+ */
+export interface CmsComponentProps<T extends CmsComponent = CmsComponent> {
+  /** The full CMS component data object from the OCC API */
+  data: T
+  /** Position name of the slot this component is rendered within */
+  slot?: string
+}
+
+/**
+ * Props for the `<CmsPage>` rendering component.
+ *
+ * Renders all content slots from a CMS page by iterating over
+ * `page.contentSlots.contentSlot[]` and rendering a `<CmsSlot>` for each.
+ */
+export interface CmsPageProps {
+  /** CMS page data — typically from `useCmsPage()` */
+  page?: CmsPageData
+  /** Whether the page data is currently loading */
+  loading?: boolean
+  /** Fallback content shown while the page is loading */
+  loadingFallback?: ReactNode
+  /** Optional CSS class on the wrapper element */
+  className?: string
+}
+
+/**
+ * Props for the `<CmsSlot>` rendering component.
+ *
+ * Resolves CMS components from the slot and renders them using the
+ * component mapping from `SapccConfig`. Each component is wrapped
+ * in an individual `<Suspense>` boundary.
+ */
+export interface CmsSlotProps {
+  /** Slot position name (e.g., 'Section1', 'TopHeaderSlot') */
+  name: string
+  /** CMS page data — the slot is extracted by matching `name` to `position` */
+  page?: CmsPageData
+  /** Alternative: pass components directly instead of extracting from a page */
+  components?: CmsComponent[]
+  /** Suspense fallback rendered per component (default: `null`) */
+  suspenseFallback?: ReactNode
+  /** Optional CSS class on the wrapper element */
+  className?: string
+  /** CmsOutlet children for before/after/replace injection */
+  children?: ReactNode
+}
+
+/**
+ * Props for the `<CmsOutlet>` marker component.
+ *
+ * Used as a child of `<CmsSlot>` to inject custom content
+ * before, after, or in place of the CMS components.
+ *
+ * @example
+ * ```tsx
+ * <CmsSlot name="Header" page={page}>
+ *   <CmsOutlet position="before"><AnnouncementBanner /></CmsOutlet>
+ *   <CmsOutlet position="after"><PromoStrip /></CmsOutlet>
+ * </CmsSlot>
+ * ```
+ */
+export interface CmsOutletProps {
+  /** Where to inject the content relative to the CMS components */
+  position: 'before' | 'after' | 'replace'
+  /** The custom content to inject */
+  children: ReactNode
 }

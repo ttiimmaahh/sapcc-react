@@ -301,6 +301,12 @@ export {
   useCmsPage,
   useCmsComponent,
   useCmsComponents,
+  useCmsComponentMapping,
+  CmsPage,
+  CmsSlot,
+  CmsOutlet,
+  getSlotByPosition,
+  getSlotComponents,
   cmsQueries,
 } from './cms'
 export type {
@@ -315,9 +321,14 @@ export type {
   ComponentList,
   ContentSlot,
   ContentSlotList,
-  CmsPage,
+  CmsPageData,
   CmsComponentListResponse,
   UseCmsPageOptions,
   UseCmsComponentOptions,
   UseCmsComponentsOptions,
+  CmsComponentProps,
+  CmsPageProps,
+  CmsSlotProps,
+  CmsOutletProps,
+  CmsComponentMappingResult,
 } from './cms'

@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import type { OccClient } from '../http/occ-client'
 import type {
-  CmsPage,
+  CmsPageData,
   CmsComponent,
   CmsComponentListResponse,
   UseCmsPageOptions,
@@ -81,7 +81,7 @@ export const cmsQueries = {
       queryFn: async () => {
         if (options.pageId) {
           // Direct page ID lookup
-          const response = await client.get<CmsPage>(
+          const response = await client.get<CmsPageData>(
             `/cms/pages/${encodeURIComponent(options.pageId)}`,
             {
               fields: options.fields,
@@ -91,7 +91,7 @@ export const cmsQueries = {
         }
 
         // Query-param based lookup
-        const response = await client.get<CmsPage>('/cms/pages', {
+        const response = await client.get<CmsPageData>('/cms/pages', {
           pageType: options.pageType,
           pageLabelOrId: options.pageLabelOrId,
           code: options.code,

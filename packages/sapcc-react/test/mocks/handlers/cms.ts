@@ -7,7 +7,7 @@ import {
   createLinkComponent,
   createCmsComponentListResponse,
 } from '../fixtures/cms'
-import type { CmsComponent, CmsPage } from '../../../src/cms/cms.types'
+import type { CmsComponent, CmsPageData } from '../../../src/cms/cms.types'
 
 const BASE_URL = 'https://test.example.com/occ/v2/test-site'
 
@@ -15,7 +15,7 @@ const BASE_URL = 'https://test.example.com/occ/v2/test-site'
 // In-memory CMS state for realistic handler behavior
 // ---------------------------------------------------------------------------
 
-let pages: CmsPage[] = [
+let pages: CmsPageData[] = [
   createCmsPage({
     uid: 'homepage',
     name: 'Homepage',
@@ -127,7 +127,7 @@ export const cmsHandlers = [
       const pageLabelOrId = url.searchParams.get('pageLabelOrId')
       const code = url.searchParams.get('code')
 
-      let page: CmsPage | undefined
+      let page: CmsPageData | undefined
 
       if (pageType === 'ContentPage' && pageLabelOrId) {
         page = pages.find((p) => p.typeCode === 'ContentPage' && p.label === pageLabelOrId)

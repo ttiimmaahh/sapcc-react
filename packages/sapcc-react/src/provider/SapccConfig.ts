@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import type { CmsComponentProps } from '../cms/cms.types'
 import type { DeepPartial } from '../utils/deep-merge'
 import type { Interceptor } from '../http/types'
 
@@ -32,10 +33,10 @@ export interface SapccConfig {
     tokenEndpoint?: string
   }
   cms?: {
-    /** Map of CMS component type UIDs to React components */
-    componentMapping?: Record<string, ComponentType<never>>
+    /** Map of CMS component type codes to React components */
+    componentMapping?: Record<string, ComponentType<CmsComponentProps>>
     /** Fallback component rendered for unmapped CMS component types */
-    fallbackComponent?: ComponentType<never>
+    fallbackComponent?: ComponentType<CmsComponentProps>
   }
   http?: {
     /** Request interceptors (e.g., for custom auth or logging) */
@@ -71,8 +72,8 @@ export interface ResolvedSapccConfig {
     tokenEndpoint: string
   }
   cms: {
-    componentMapping: Record<string, ComponentType<never>>
-    fallbackComponent?: ComponentType<never>
+    componentMapping: Record<string, ComponentType<CmsComponentProps>>
+    fallbackComponent?: ComponentType<CmsComponentProps>
   }
   http: {
     interceptors: Interceptor[]
