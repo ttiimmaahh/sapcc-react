@@ -7,6 +7,7 @@ export default defineConfig({
     'product/index': 'src/product/index.ts',
     'auth/index': 'src/auth/index.ts',
     'cart/index': 'src/cart/index.ts',
+    'checkout/index': 'src/checkout/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,

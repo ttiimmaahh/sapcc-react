@@ -70,6 +70,16 @@
         "default": "./dist/cart/index.cjs"
       }
     },
+    "./checkout": {
+      "import": {
+        "types": "./dist/checkout/index.d.ts",
+        "default": "./dist/checkout/index.mjs"
+      },
+      "require": {
+        "types": "./dist/checkout/index.d.cts",
+        "default": "./dist/checkout/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",

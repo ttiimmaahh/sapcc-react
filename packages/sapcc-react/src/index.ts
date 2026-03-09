@@ -185,3 +185,26 @@ export type {
   UseSavedCartsOptions,
   SaveCartParams,
 } from './cart'
+
+// Checkout
+export {
+  useDeliveryAddress,
+  useDeliveryModes,
+  usePaymentDetails,
+  usePlaceOrder,
+  useGuestCheckout,
+  checkoutQueries,
+  normalizeOrder,
+} from './checkout'
+export type {
+  NormalizedOrder,
+  Order,
+  Consignment,
+  ConsignmentEntry,
+  DeliveryModeList,
+  SetDeliveryAddressParams,
+  SetPaymentDetailsParams,
+  PlaceOrderParams,
+  GuestCheckoutParams,
+  UseDeliveryModesOptions,
+} from './checkout'

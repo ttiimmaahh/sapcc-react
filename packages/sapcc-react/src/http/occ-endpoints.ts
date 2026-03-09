@@ -35,6 +35,14 @@ const endpointTemplates: Record<string, string> = {
   cartSave: '/users/current/carts/:cartId/save',
   cartRestore: '/users/current/carts/:cartId/restoresavedcart',
   cartClone: '/users/current/carts/:cartId/clonesavedcart',
+
+  // Checkout
+  cartDeliveryAddress: '/users/:userId/carts/:cartId/addresses/delivery',
+  cartDeliveryModes: '/users/:userId/carts/:cartId/deliverymodes',
+  cartDeliveryMode: '/users/:userId/carts/:cartId/deliverymode',
+  cartPaymentDetails: '/users/:userId/carts/:cartId/paymentdetails',
+  cartEmail: '/users/:userId/carts/:cartId/email',
+  orders: '/users/:userId/orders',
 }
 
 /**
