@@ -10,6 +10,7 @@ export default defineConfig({
     'checkout/index': 'src/checkout/index.ts',
     'user/index': 'src/user/index.ts',
     'order/index': 'src/order/index.ts',
+    'cms/index': 'src/cms/index.ts',
   },
   format: ['esm', 'cjs'],
   dts: true,

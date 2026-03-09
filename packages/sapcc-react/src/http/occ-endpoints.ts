@@ -83,6 +83,12 @@ const endpointTemplates: Record<string, string> = {
 
   // Consignment tracking
   consignmentTracking: '/orders/:orderCode/consignments/:consignmentCode/tracking',
+
+  // CMS
+  cmsPages: '/cms/pages',
+  cmsPage: '/cms/pages/:pageId',
+  cmsComponents: '/cms/components',
+  cmsComponent: '/cms/components/:componentId',
 }
 
 /**

@@ -295,3 +295,29 @@ export type {
   UseOrderReturnsOptions,
   UseConsignmentTrackingOptions,
 } from './order'
+
+// CMS
+export {
+  useCmsPage,
+  useCmsComponent,
+  useCmsComponents,
+  cmsQueries,
+} from './cms'
+export type {
+  PageType,
+  PageRobots,
+  CmsComponent,
+  CmsBannerComponent,
+  CmsParagraphComponent,
+  CmsLinkComponent,
+  CmsNavigationComponent,
+  CmsProductCarouselComponent,
+  ComponentList,
+  ContentSlot,
+  ContentSlotList,
+  CmsPage,
+  CmsComponentListResponse,
+  UseCmsPageOptions,
+  UseCmsComponentOptions,
+  UseCmsComponentsOptions,
+} from './cms'

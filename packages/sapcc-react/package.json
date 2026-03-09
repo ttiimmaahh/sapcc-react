@@ -100,6 +100,16 @@
         "default": "./dist/order/index.cjs"
       }
     },
+    "./cms": {
+      "import": {
+        "types": "./dist/cms/index.d.ts",
+        "default": "./dist/cms/index.mjs"
+      },
+      "require": {
+        "types": "./dist/cms/index.d.cts",
+        "default": "./dist/cms/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
