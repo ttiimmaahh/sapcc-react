@@ -4,6 +4,7 @@ import type {
   OccResponse,
   OccErrorResponse,
   Interceptor,
+  UnauthorizedHandler,
 } from './types'
 import { OccError } from './occ-error'
 import { buildRawUrl } from './occ-endpoints'
@@ -14,6 +15,7 @@ import { buildRawUrl } from './occ-endpoints'
  * Uses native `fetch` internally. Supports:
  * - Request interceptors (e.g., auth token injection)
  * - Automatic retry on network errors
+ * - 401 Unauthorized handling with token refresh and request retry
  * - OCC error response parsing into typed OccError instances
  * - Dev mode request/response logging
  */
@@ -21,11 +23,13 @@ export class OccClient {
   private readonly config: OccClientConfig
   private readonly interceptors: Interceptor[]
   private readonly maxRetries: number
+  private readonly onUnauthorized?: UnauthorizedHandler
 
   constructor(config: OccClientConfig) {
     this.config = config
     this.interceptors = config.interceptors ?? []
     this.maxRetries = config.retries ?? 1
+    this.onUnauthorized = config.onUnauthorized
   }
 
   /**
@@ -84,8 +88,11 @@ export class OccClient {
   /**
    * Core request method. Runs interceptors, sends fetch, handles errors and retries.
    */
-  private async request<T>(initialConfig: OccRequestConfig): Promise<OccResponse<T>> {
-    // Run interceptor chain
+  private async request<T>(
+    initialConfig: OccRequestConfig,
+    isRetryAfterAuth = false,
+  ): Promise<OccResponse<T>> {
+    // Run interceptor chain (re-run on retry to pick up refreshed token)
     let config = initialConfig
     for (const interceptor of this.interceptors) {
       config = await interceptor(config)
@@ -105,23 +112,38 @@ export class OccClient {
       this.logRequest(config.method, url, fetchOptions)
     }
 
-    return this.executeWithRetry<T>(url, fetchOptions, 0)
+    return this.executeWithRetry<T>(url, fetchOptions, 0, initialConfig, isRetryAfterAuth)
   }
 
   /**
-   * Executes fetch with retry logic for network errors.
-   * Only retries on network errors (TypeError), not on HTTP error responses.
+   * Executes fetch with retry logic for network errors and 401 handling.
+   *
+   * Retry strategy:
+   * - Network errors (TypeError): retry up to maxRetries times
+   * - 401 Unauthorized: call onUnauthorized handler, retry once if it succeeds
+   * - Other HTTP errors: throw immediately (no retry)
    */
   private async executeWithRetry<T>(
     url: string,
     options: RequestInit,
     attempt: number,
+    originalConfig: OccRequestConfig,
+    isRetryAfterAuth: boolean,
   ): Promise<OccResponse<T>> {
     try {
       const response = await fetch(url, options)
 
       if (this.config.logging) {
         this.logResponse(url, response)
+      }
+
+      // Handle 401 with token refresh and retry (only once, not on auth retry)
+      if (response.status === 401 && !isRetryAfterAuth && this.onUnauthorized) {
+        const refreshed = await this.onUnauthorized()
+        if (refreshed) {
+          // Re-run the full request pipeline (interceptors will add new token)
+          return await this.request<T>(originalConfig, true)
+        }
       }
 
       if (!response.ok) {
@@ -147,7 +169,7 @@ export class OccClient {
     } catch (error) {
       // Only retry on network errors (TypeError: Failed to fetch), not OccErrors
       if (error instanceof TypeError && attempt < this.maxRetries) {
-        return this.executeWithRetry<T>(url, options, attempt + 1)
+        return this.executeWithRetry<T>(url, options, attempt + 1, originalConfig, isRetryAfterAuth)
       }
       throw error
     }

@@ -10,4 +10,5 @@ export type {
   OccFields,
   HttpMethod,
   Interceptor,
+  UnauthorizedHandler,
 } from './types'

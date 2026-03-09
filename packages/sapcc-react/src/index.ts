@@ -19,6 +19,7 @@ export type {
   OccErrorDetail,
   Interceptor,
   OccClientConfig,
+  UnauthorizedHandler,
 } from './http'
 
 // Utilities
@@ -111,3 +112,35 @@ export type {
   UseProductSuggestionsOptions,
   UseProductReferencesOptions,
 } from './product'
+
+// Auth
+export {
+  useAuth,
+  useUser,
+  AuthProvider,
+  authQueries,
+  OAuthService,
+  OAuthError,
+  normalizeTokenResponse,
+  isTokenExpired,
+  createTokenStorage,
+  LocalStorageTokenStorage,
+  InMemoryTokenStorage,
+  TokenInterceptor,
+  AuthContext,
+} from './auth'
+export type {
+  AuthContextValue,
+  OAuthTokenResponse,
+  TokenData,
+  OAuthGrantType,
+  LoginCredentials,
+  RegistrationData,
+  User,
+  AuthState,
+  TokenStorage,
+  ResolvedAuthConfig,
+  UseUserOptions,
+  AuthFailureCallback,
+  TokenInterceptorConfig,
+} from './auth'

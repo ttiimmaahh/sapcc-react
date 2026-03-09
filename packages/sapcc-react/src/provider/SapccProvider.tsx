@@ -4,6 +4,7 @@ import { resolveConfig, type ResolvedSapccConfig } from './SapccConfig'
 import { SapccContext, type SapccContextValue } from './SapccContext'
 import { OccClient } from '../http/occ-client'
 import { SiteContextProvider } from '../site-context/SiteContextProvider'
+import { AuthProvider } from '../auth/AuthProvider'
 
 /**
  * Props for the SapccProvider component.
@@ -22,6 +23,10 @@ export interface SapccProviderProps {
  * providing resolved configuration, a pre-configured HTTP client,
  * and reactive site-context state (language/currency switching).
  *
+ * When `auth` configuration is provided, automatically wraps children
+ * with an AuthProvider that manages OAuth2 tokens, Bearer header injection,
+ * and 401 retry with token refresh.
+ *
  * Must be placed inside a `<QueryClientProvider>` and above any
  * sapcc-react hooks in the component tree.
  *
@@ -31,6 +36,7 @@ export interface SapccProviderProps {
  *   <SapccProvider config={{
  *     backend: { occ: { baseUrl: 'https://api.mystore.com' } },
  *     site: { baseSite: 'electronics-spa' },
+ *     auth: { clientId: 'mobile_android' },
  *   }}>
  *     <App />
  *   </SapccProvider>
@@ -58,11 +64,17 @@ export function SapccProvider({ config, children }: SapccProviderProps) {
     [resolvedConfig, client],
   )
 
-  return (
-    <SapccContext.Provider value={contextValue}>
+  // Conditionally wrap with AuthProvider when auth config is present.
+  // AuthProvider overrides the SapccContext with an auth-aware OccClient.
+  const content = resolvedConfig.auth ? (
+    <AuthProvider>
       <SiteContextProvider>{children}</SiteContextProvider>
-    </SapccContext.Provider>
+    </AuthProvider>
+  ) : (
+    <SiteContextProvider>{children}</SiteContextProvider>
   )
+
+  return <SapccContext.Provider value={contextValue}>{content}</SapccContext.Provider>
 }
 
 /**

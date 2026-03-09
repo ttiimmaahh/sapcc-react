@@ -72,6 +72,14 @@ export type Interceptor = (
 ) => OccRequestConfig | Promise<OccRequestConfig>
 
 /**
+ * Handler invoked when a 401 Unauthorized response is received.
+ * Should attempt to refresh the token and return true if successful.
+ * Returning true causes the original request to be retried (with interceptors re-run).
+ * Returning false or throwing causes the 401 error to propagate normally.
+ */
+export type UnauthorizedHandler = () => Promise<boolean>
+
+/**
  * Configuration for the OCC client instance.
  */
 export interface OccClientConfig {
@@ -87,4 +95,9 @@ export interface OccClientConfig {
   retries?: number
   /** Enable dev mode logging */
   logging?: boolean
+  /**
+   * Handler called on 401 responses. If it returns true, the request is retried
+   * with interceptors re-run (to pick up the refreshed token).
+   */
+  onUnauthorized?: UnauthorizedHandler
 }
