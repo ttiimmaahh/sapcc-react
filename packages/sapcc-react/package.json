@@ -40,6 +40,16 @@
         "default": "./dist/site-context/index.cjs"
       }
     },
+    "./product": {
+      "import": {
+        "types": "./dist/product/index.d.ts",
+        "default": "./dist/product/index.mjs"
+      },
+      "require": {
+        "types": "./dist/product/index.d.cts",
+        "default": "./dist/product/index.cjs"
+      }
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",

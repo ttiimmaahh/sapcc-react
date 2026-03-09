@@ -9,8 +9,8 @@ interface MockPrice {
 interface MockImage {
   url: string
   altText: string
-  format: 'product'
-  imageType: 'PRIMARY'
+  format: string
+  imageType: string
 }
 
 interface MockPagination {

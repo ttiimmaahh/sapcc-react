@@ -4,8 +4,7 @@ import { buildQueryString } from '../utils/query-params'
  * Registry of OCC endpoint URL templates.
  * Template parameters use `:paramName` syntax (e.g., `/countries/:isoCode/regions`).
  *
- * Phase 1 only includes site-context endpoints.
- * Later phases will add products, cart, checkout, etc.
+ * Organized by domain. New endpoints are added as phases are implemented.
  */
 const endpointTemplates: Record<string, string> = {
   // Site context
@@ -16,6 +15,14 @@ const endpointTemplates: Record<string, string> = {
   titles: '/titles',
   cardTypes: '/cardtypes',
   baseSites: '/basesites',
+
+  // Products
+  productSearch: '/products/search',
+  productDetail: '/products/:productCode',
+  productReviews: '/products/:productCode/reviews',
+  productSuggestions: '/products/suggestions',
+  productStock: '/products/:productCode/stock',
+  productReferences: '/products/:productCode/references',
 }
 
 /**
